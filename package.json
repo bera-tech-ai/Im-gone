@@ -5,13 +5,11 @@
   "main": "./index.js",
   "type": "commonjs",
   "engines": {
-    "npm": "10.x",
-    "node": "22.x"
+    "node": "18.x"
   },
   "scripts": {
-    "start": "pm2 start index.js --name giftedmd",
-    "stop": "pm2 stop giftedmd",
-    "restart": "pm2 restart giftedmd"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "keywords": [
     "gifted-md",
@@ -50,12 +48,16 @@
     "path": "latest",
     "pg": "*",
     "pino": "^7.0.5",
-    "pm2": "latest",
     "qrcode-terminal": "^0.12.0",
     "sequelize": "*",
     "sqlite3": "*",
     "util": "*",
-    "wa-sticker-formatter": "*"
+    "wa-sticker-formatter": "*",
+    "qrcode": "^1.5.3",
+    "zlib": "^1.0.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   },
   "repository": {
     "type": "git",
