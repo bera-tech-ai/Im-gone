@@ -53,8 +53,7 @@
     "sqlite3": "*",
     "util": "*",
     "wa-sticker-formatter": "*",
-    "qrcode": "^1.5.3",
-    
+    "qrcode": "^1.5.3"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
