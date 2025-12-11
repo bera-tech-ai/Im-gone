@@ -54,7 +54,7 @@
     "util": "*",
     "wa-sticker-formatter": "*",
     "qrcode": "^1.5.3",
-    "zlib": "^1.0.5"
+    
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
