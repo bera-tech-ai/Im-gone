@@ -1,31 +1,36 @@
+# Use Node.js LTS version
 FROM node:18-alpine
 
-# Install pm2 globally
-RUN npm install -g pm2
-
-# Install system dependencies
+# Install git and other system dependencies
 RUN apk add --no-cache \
+    git \
     python3 \
     make \
     g++ \
     ffmpeg \
     bash
 
+# Create and set working directory
 WORKDIR /app
 
+# Copy package.json
 COPY package*.json ./
 
-# Install dependencies
+# Install dependencies (git is now available)
 RUN npm install --only=production --no-audit --no-fund
 
+# Copy all files
 COPY . .
 
+# Create necessary directories
 RUN mkdir -p gift/session
 
+# Set environment variables
 ENV NODE_ENV=production
 ENV PORT=10000
 
+# Expose port
 EXPOSE 10000
 
-# Start with pm2
-CMD ["pm2-runtime", "start", "index.js", "--name", "giftedmd"]
+# Start the bot directly with node
+CMD ["node", "index.js"]
