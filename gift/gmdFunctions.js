@@ -350,22 +350,46 @@ function formatBytes(bytes) {
   } else {
     return bytes.toFixed(2) + ' bytes';
   }
-    }
+}
 
+// UPDATED LOADSESSION FUNCTION - WON'T THROW ERROR WHEN NO SESSION
 async function loadSession() {
     try {
+        // First, check if session file already exists
         if (fs.existsSync(sessionPath)) {
-            fs.unlinkSync(sessionPath);
+            console.log("✅ Existing session file found, loading...");
+            
+            try {
+                const sessionData = fs.readFileSync(sessionPath, 'utf8');
+                const sessionJson = JSON.parse(sessionData);
+                
+                // Extract phone number for logging
+                let phoneNumber = "Unknown";
+                if (sessionJson.me && sessionJson.me.id) {
+                    phoneNumber = sessionJson.me.id.split('@')[0];
+                }
+                
+                console.log(`✅ Loaded session for: ${phoneNumber}`);
+                return true;
+            } catch (readError) {
+                console.error("❌ Error reading session file:", readError.message);
+                return false;
+            }
         }
 
+        // If no SESSION_ID is provided, it's OK - we're in setup mode
         if (!config.SESSION_ID || typeof config.SESSION_ID !== 'string') {
-            throw new Error("❌ SESSION_ID is missing or invalid");
+            console.log("⚠️ No SESSION_ID found. Bot starting in setup mode.");
+            console.log("📱 Visit /qr to generate a session");
+            return false; // Don't throw error, just return false
         }
 
+        // Try to load from SESSION_ID if provided
         const [header, b64data] = config.SESSION_ID.split('~');
 
         if (header !== "Gifted" || !b64data) {
-            throw new Error("❌ Invalid session format. Expected 'Gifted~.....'");
+            console.log("⚠️ Invalid session format. Starting in setup mode...");
+            return false;
         }
 
         const cleanB64 = b64data.replace('...', '');
@@ -377,11 +401,12 @@ async function loadSession() {
         }
 
         fs.writeFileSync(sessionPath, decompressedData, "utf8");
-        console.log("✅ Session File Loaded");
+        console.log("✅ Session File Loaded from SESSION_ID");
+        return true;
 
     } catch (e) {
         console.error("❌ Session Error:", e.message);
-        throw e;
+        return false; // Return false instead of throwing error
     }
 }
 
